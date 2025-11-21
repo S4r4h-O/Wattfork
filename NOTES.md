@@ -1,6 +1,10 @@
 # Notes for development
 
-## [Supabase auth components](https://supabase.com/ui/docs/getting-started/introduction)
+## Supabase
+
+- [Supabase auth components](https://supabase.com/ui/docs/getting-started/introduction)
+
+- [Supabase files uploads](https://supabase.com/docs/guides/storage/uploads/standard-uploads?queryGroups=language&language=js)
 
 ## Backend
 
