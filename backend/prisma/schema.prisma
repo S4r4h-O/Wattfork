@@ -18,4 +18,80 @@ model User {
   authId    String   @unique
   role      Roles    @default(USER)
   createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  profile Profile?
+  stories Story[]
+}
+
+enum Pronouns {
+  SHE_HER
+  HE_HIM
+  THEY_THEM
+  NOT_SPECIFIED
+  NOT_LISTED
+}
+
+model Profile {
+  id              String   @id @default(dbgenerated("gen_random_uuid()"))
+  userId          String   @unique @db.Uuid
+  about           String?  @db.VarChar(500)
+  myWebsite       String?  @db.VarChar(200)
+  location        String?
+  image           String?
+  backgroundImage String?
+  createdAt       DateTime @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+enum StoryStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Story {
+  id          String      @id @default(dbgenerated("gen_random_uuid()"))
+  userId      String      @db.Uuid
+  categoryId  String      @db.Uuid
+  slug        String
+  cover       String?
+  title       String      @db.VarChar(200)
+  description String      @db.VarChar(2000)
+  language    String
+  status      StoryStatus @default(DRAFT)
+  isMature    Boolean     @default(false)
+  createdAt   DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime    @updatedAt
+
+  category Category    @relation(fields: [categoryId], references: [id])
+  user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parts    StoryPart[]
+
+  @@index([userId])
+  @@index([categoryId])
+}
+
+model StoryPart {
+  id         String   @id @default(dbgenerated("gen_random_uuid()"))
+  storyId    String   @db.Uuid
+  partNumber Int
+  title      String   @db.VarChar(200)
+  content    String   @db.Text
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime @updatedAt @db.Timestamp(6)
+
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@unique([storyId, partNumber])
+}
+
+model Category {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  name      String   @unique @db.VarChar(100)
+  slug      String   @unique
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt
+
+  stories Story[]
 }
