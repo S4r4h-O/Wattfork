@@ -5,6 +5,7 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import type { QueryClient } from "@tanstack/react-query";
+import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 
 import "../styles.css";
 
@@ -24,6 +25,7 @@ function RootDocument() {
       </head>
       <body>
         <Outlet />
+        <TanStackRouterDevtools position="bottom-right" initialIsOpen={false} />
         <Scripts />
       </body>
     </html>
