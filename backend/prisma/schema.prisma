@@ -34,6 +34,7 @@ enum Pronouns {
 model Profile {
   id              String   @id @default(dbgenerated("gen_random_uuid()"))
   userId          String   @unique @db.Uuid
+  username        String   @unique
   about           String?  @db.VarChar(500)
   myWebsite       String?  @db.VarChar(200)
   location        String?
@@ -63,11 +64,11 @@ model Story {
   isMature    Boolean     @default(false)
   createdAt   DateTime    @default(now()) @db.Timestamp(6)
   updatedAt   DateTime    @updatedAt @db.Timestamp(6)
-  
+
   category Category    @relation(fields: [categoryId], references: [id])
   user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   parts    StoryPart[]
-  
+
   @@index([userId])
   @@index([categoryId])
 }
@@ -80,9 +81,9 @@ model StoryPart {
   content    String
   createdAt  DateTime @default(now()) @db.Timestamp(6)
   updatedAt  DateTime @updatedAt @db.Timestamp(6)
-  
+
   story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
-  
+
   @@unique([storyId, partNumber])
   @@index([storyId])
 }
