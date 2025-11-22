@@ -1,6 +1,5 @@
 generator client {
-  provider = "prisma-client"
-  output   = "./generated"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -52,7 +51,7 @@ enum StoryStatus {
 }
 
 model Story {
-  id          String      @id @default(dbgenerated("gen_random_uuid()"))
+  id          Int         @id @default(autoincrement())
   userId      String      @db.Uuid
   categoryId  String      @db.Uuid
   slug        String
@@ -63,28 +62,29 @@ model Story {
   status      StoryStatus @default(DRAFT)
   isMature    Boolean     @default(false)
   createdAt   DateTime    @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime    @updatedAt
-
+  updatedAt   DateTime    @updatedAt @db.Timestamp(6)
+  
   category Category    @relation(fields: [categoryId], references: [id])
   user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   parts    StoryPart[]
-
+  
   @@index([userId])
   @@index([categoryId])
 }
 
 model StoryPart {
-  id         String   @id @default(dbgenerated("gen_random_uuid()"))
-  storyId    String   @db.Uuid
+  id         Int      @id @default(autoincrement())
+  storyId    Int
   partNumber Int
   title      String   @db.VarChar(200)
-  content    String   @db.Text
+  content    String
   createdAt  DateTime @default(now()) @db.Timestamp(6)
   updatedAt  DateTime @updatedAt @db.Timestamp(6)
-
+  
   story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
-
+  
   @@unique([storyId, partNumber])
+  @@index([storyId])
 }
 
 model Category {
